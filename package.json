@@ -16,7 +16,8 @@
     "build": "nuxt build && electron-builder"
   },
   "dependencies": {
-    "nuxt": "^2.1.0"
+    "nuxt": "^2.1.0",
+    "simple-git": "^1.104.0"
   },
   "devDependencies": {
     "babel-eslint": "^10.0.1",
