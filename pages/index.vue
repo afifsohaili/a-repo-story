@@ -1,31 +1,41 @@
 <template>
-	<section class="container">
-		<div>
-			<img width="256" src="~/assets/img/logo.png">
-			<h1>a-repo-story</h1>
-			<h2>Nuxt + Electron</h2>
-			<a href="https://nuxtjs.org/" target="_blank" class="btn btn-primary">Documentation</a>
-			<a href="https://github.com/nuxt/nuxt.js" target="_blank" class="btn btn-primary">GitHub</a>
-			<a href="https://electronjs.org/" target="_blank" class="btn btn-secondary">Electron</a>
-			<a href="https://github.com/electron-userland/electron-builder" target="_blank" class="btn btn-secondary">Electron Builder</a>
-		</div>
-	</section>
+  <div>
+    <h1>
+      Simple git
+    </h1>
+    <template v-if="logs">
+      <ul>
+        <li v-for="log in logs" :key="log.hash">
+          {{ log.message }}
+        </li>
+      </ul>
+    </template>
+  </div>
 </template>
 
 <script>
+import simpleGit from 'simple-git';
+import path from 'path';
+
 export default {
-}
+  data() {
+    return {
+      logs: []
+    };
+  },
+  mounted() {
+    const git = simpleGit(path.resolve('./../afifsohaili'));
+
+    git.log({'--pretty': 'oneline'}, (err, logs) => {
+      if (err) {
+        throw err;
+      }
+      console.log('\n', 'log', logs);
+      this.logs = logs.all;
+    });
+  }
+};
 </script>
 
 <style scoped>
-.container {
-	min-height: 100vh;
-	display: flex;
-	justify-content: center;
-	align-items: center;
-	text-align: center;
-}
-.btn {
-	margin: 0 8px;
-}
 </style>
