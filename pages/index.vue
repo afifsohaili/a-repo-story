@@ -17,7 +17,7 @@
             {{result.message}}
           </li>
         </template>
-        <li v-else>No results found for <em>{{keyword}}</em></li>
+        <li v-if="noResultsFound">No results found for <em>{{keyword}}</em></li>
       </ul>
     </template>
   </div>
@@ -42,6 +42,9 @@ export default {
     },
     shouldShowSearchResults() {
       return this.logs.length && this.keyword.length && this.results.length;
+    },
+    noResultsFound() {
+      return this.keyword.length && !this.results.length;
     }
   },
   mounted() {
