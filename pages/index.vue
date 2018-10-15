@@ -3,23 +3,25 @@
     <h1>
       Simple git
     </h1>
-    <template v-if="logs.length">
-      <input type="text" v-model="keyword">
-      <ul>
-        <template v-if="shouldShowAllLogs">
-          <li v-for="log in logs" :key="log.hash">
-            {{log.message}}
-          </li>
-        </template>
-        <li v-if="!logs.length">No logs found. Not a git folder?</li>
-        <template v-if="shouldShowSearchResults">
-          <li v-for="result in results" :key="result.hash">
-            {{result.message}}
-          </li>
-        </template>
-        <li v-if="noResultsFound">No results found for <em>{{keyword}}</em></li>
-      </ul>
-    </template>
+    <panes v-if="logs.length">
+      <pane>
+        <input type="text" v-model="keyword">
+        <ul>
+          <template v-if="shouldShowAllLogs">
+            <li v-for="log in logs" :key="log.hash">
+              {{log.message}}
+            </li>
+          </template>
+          <li v-if="!logs.length">No logs found. Not a git folder?</li>
+          <template v-if="shouldShowSearchResults">
+            <li v-for="result in results" :key="result.hash">
+              {{result.message}}
+            </li>
+          </template>
+          <li v-if="noResultsFound">No results found for <em>{{keyword}}</em></li>
+        </ul>
+      </pane>
+    </panes>
   </div>
 </template>
 
@@ -27,8 +29,11 @@
 import simpleGit from 'simple-git';
 import path from 'path';
 import fuzzy from 'fuzzysort';
+import Pane from '~/components/Pane';
+import Panes from '~/components/Panes';
 
 export default {
+  components: {Pane, Panes},
   data() {
     return {
       logs: [],
