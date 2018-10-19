@@ -10,6 +10,7 @@
         <git-pane index="revision2" path="./../afifsohaili"/>
       </pane>
     </panes>
+    <git-diff />
   </div>
 </template>
 
@@ -17,9 +18,10 @@
 import Pane from '~/components/Pane';
 import Panes from '~/components/Panes';
 import GitPane from '~/components/GitPane';
+import GitDiff from '~/components/GitDiff';
 
 export default {
-  components: {Pane, Panes, GitPane}
+  components: {GitDiff, GitPane, Pane, Panes}
 };
 </script>
 
