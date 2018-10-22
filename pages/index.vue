@@ -5,9 +5,9 @@
     </h1>
     <panes>
       <pane>
-        <git-pane index="revision1" path="./../afifsohaili"/>
+        <git-pane index="revision1" :path="gitPath"/>
       </pane><pane>
-        <git-pane index="revision2" path="./../afifsohaili"/>
+        <git-pane index="revision2" :path="gitPath"/>
       </pane>
     </panes>
     <git-diff />
@@ -21,7 +21,10 @@ import GitPane from '~/components/GitPane';
 import GitDiff from '~/components/GitDiff';
 
 export default {
-  components: {GitDiff, GitPane, Pane, Panes}
+  components: {GitDiff, GitPane, Pane, Panes},
+  data() {
+    return {gitPath: process.env.GIT_PATH};
+  }
 };
 </script>
 
