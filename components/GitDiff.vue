@@ -5,17 +5,12 @@
 </template>
 
 <script>
-import path from 'path';
-import simpleGit from 'simple-git/promise';
-
-const git = simpleGit(path.resolve('./../afifsohaili'));
-
 export default {
   data() {
     return {diff: ''};
   },
   methods: {
-    async getDiff() {
+    getDiff() {
       const rev1 = this.$store.state.git.revision1;
       const rev2 = this.$store.state.git.revision2;
 
@@ -24,12 +19,21 @@ export default {
         return;
       }
 
-      const diff = await git.diff([`${rev1}...${rev2}`]);
-      if (diff) {
-        this.diff = diff;
-        return;
-      }
-      this.diff = await git.diff([`${rev2}...${rev1}`]);
+      this.$git.diff([`${rev1}...${rev2}`], (err, diff) => {
+        if (err) {
+          throw err;
+        }
+        if (diff) {
+          this.diff = diff;
+          return;
+        }
+        this.$git.diff([`${rev2}...${rev1}`], (err, diff) => {
+          if (err) {
+            throw err;
+          }
+          this.diff = diff;
+        });
+      });
     }
   },
   watch: {

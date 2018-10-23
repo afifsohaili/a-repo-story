@@ -24,8 +24,6 @@
 </template>
 
 <script>
-import simpleGit from 'simple-git';
-import path from 'path';
 import fuzzy from 'fuzzysort';
 
 export default {
@@ -52,9 +50,7 @@ export default {
     }
   },
   mounted() {
-    const git = simpleGit(path.resolve(this.path));
-
-    git.log({'--pretty': 'oneline'}, (err, logs) => {
+    this.$git.log({'--pretty': 'oneline'}, (err, logs) => {
       if (err) {
         throw err;
       }
