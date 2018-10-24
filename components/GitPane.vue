@@ -43,7 +43,7 @@ export default {
     }
   },
   mounted() {
-    this.$git.log({'--pretty': 'oneline'}, (err, logs) => {
+    this.$git.log({'--pretty': 'oneline', '--max-parents': '1'}, (err, logs) => {
       if (err) {
         throw err;
       }
