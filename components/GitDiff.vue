@@ -48,14 +48,4 @@ export default {
 </script>
 
 <style scoped>
-pre {
-  background: #fff;
-  position: fixed;
-  max-height: 100px;
-  overflow: scroll;
-  bottom: 0;
-  width: 100%;
-  padding: 1rem;
-  border-top: 1px solid #c5c5c5;
-}
 </style>

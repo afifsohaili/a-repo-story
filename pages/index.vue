@@ -1,27 +1,16 @@
 <template>
-  <div>
-    <h1>
-      Simple git
-    </h1>
-    <panes>
-      <pane>
-        <git-pane index="revision1" :path="gitPath"/>
-      </pane><pane>
-        <git-pane index="revision2" :path="gitPath"/>
-      </pane>
-    </panes>
-    <git-diff />
+  <div class="container">
+    <git-pane class="pane"/>
+    <git-diff class="diff" />
   </div>
 </template>
 
 <script>
-import Pane from '~/components/Pane';
-import Panes from '~/components/Panes';
 import GitPane from '~/components/GitPane';
 import GitDiff from '~/components/GitDiff';
 
 export default {
-  components: {GitDiff, GitPane, Pane, Panes},
+  components: {GitDiff, GitPane},
   data() {
     return {gitPath: process.env.GIT_PATH};
   }
@@ -29,4 +18,15 @@ export default {
 </script>
 
 <style scoped>
+.container {
+  display: flex;
+}
+
+.pane {
+  flex: 33% 1 0;
+}
+
+.diff {
+  flex: 67% 1 0;
+}
 </style>

@@ -2,13 +2,10 @@
   <div v-if="logs.length">
     <div>
       <input type="text" v-model="keyword">
-      <span class="git-rev">
-        {{this.selectedRevision}}
-      </span>
     </div>
     <ul>
       <template v-if="shouldShowAllLogs">
-        <li v-for="log in logs" :key="log.hash" @click="setRevision(log.hash)">
+        <li v-for="log in logs" :key="log.hash" :class="isSelected(log.hash) ? 'selected' : ''" @click="setRevision(log.hash)">
           {{log.message}}
         </li>
       </template>
@@ -27,7 +24,6 @@
 import fuzzy from 'fuzzysort';
 
 export default {
-  props: ['id', 'index', 'path'],
   data() {
     return {
       keyword: '',
@@ -38,9 +34,6 @@ export default {
   computed: {
     noResultsFound() {
       return this.keyword.length && !this.results.length;
-    },
-    selectedRevision() {
-      return this.$store.state.git[this.index];
     },
     shouldShowAllLogs() {
       return this.logs.length && !this.keyword.length;
@@ -70,19 +63,33 @@ export default {
       const resultsMessages = results.map(result => result.target);
       this.results = this.logs.filter(log => resultsMessages.includes(log.message));
     },
+    isSelected(commitHash) {
+      const {revision1, revision2} = this.$store.state.git;
+      return [revision1, revision2].some(revision => revision === commitHash);
+    },
     setRevision(commitHash) {
-      if (this.$store.state.git[this.index] === commitHash) {
-        this.$store.commit('git/setRevision', {key: this.index, revision: ''});
-        return;
+      const {revision1, revision2} = this.$store.state.git;
+      if (revision1 && !revision2) {
+        this.$store.commit('git/setRevision', {key: 'revision2', revision: commitHash});
+      } else if (revision1 && revision2) {
+        this.$store.commit('git/setRevision', {key: 'revision1', revision: commitHash});
+        this.$store.commit('git/setRevision', {key: 'revision2', revision: undefined});
+      } else {
+        this.$store.commit('git/setRevision', {key: 'revision1', revision: commitHash});
       }
-      this.$store.commit('git/setRevision', {key: this.index, revision: commitHash});
     }
   }
 };
 </script>
 
 <style scoped>
+ul {
+  margin: 0;
+  padding: 0;
+}
+
 li {
+  list-style: none;
   cursor: pointer;
 }
 
@@ -90,10 +97,8 @@ li:hover {
   background: #e5e5e5;
 }
 
-.git-rev {
-  display: inline-block;
-  max-width: 50%;
-  overflow: hidden;
-  text-overflow: ellipsis;
+.selected {
+  background: #909090;
+  color: #fff;
 }
 </style>
