@@ -1,16 +1,16 @@
 <template>
   <div class="container">
-    <git-pane class="pane"/>
+    <commits-selection class="pane"/>
     <git-diff class="diff" />
   </div>
 </template>
 
 <script>
-import GitPane from '~/components/GitPane';
+import CommitsSelection from '~/components/CommitsSelection';
 import GitDiff from '~/components/GitDiff';
 
 export default {
-  components: {GitDiff, GitPane},
+  components: {GitDiff, CommitsSelection},
   data() {
     return {gitPath: process.env.GIT_PATH};
   }
