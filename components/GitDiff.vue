@@ -3,14 +3,49 @@
     <p class="error" v-if="error.length">
       {{error}}
     </p>
-    <pre>
-      {{diff}}
-    </pre>
+    <div class="diff">
+      <diff-line
+        v-for="(lineArgs, i) in styledDiff"
+        :key="'diffLine' + i"
+        v-bind="lineArgs">
+      </diff-line>
+    </div>
   </div>
 </template>
 
 <script>
+import entities from 'entities';
+import DiffLine from '~/components/DiffLine';
+
+const formatForAddition = ({line, ...props}) => {
+  const lineIsAddition =
+    line.startsWith(entities.encodeHTML('+')) &&
+    !line.startsWith(entities.encodeHTML('+++'));
+  return lineIsAddition ? {line, ...props, addition: true} : {line, ...props};
+};
+
+const formatForDeletion = ({line, ...props}) => {
+  const lineIsDeletion =
+    line.startsWith(entities.encodeHTML('-')) &&
+    !line.startsWith(entities.encodeHTML('---'));
+  return lineIsDeletion ? {line, ...props, deletion: true} : {line, ...props};
+};
+
+const replaceTabWithSpaces = ({line, ...props}) => {
+  return {
+    line: line
+      .replace(/ {2}/g, '&nbsp;'.repeat(2))
+      .replace(/ /g, '&nbsp;'),
+    ...props
+  };
+};
+
+const encodeHtmlEntities = ({line, ...props}) => {
+  return {line: entities.encodeHTML(line), ...props};
+};
+
 export default {
+  components: {DiffLine},
   data() {
     return {
       error: '',
@@ -46,9 +81,23 @@ export default {
       this.error = '';
     }
   },
+  computed: {
+    styledDiff() {
+      if (!this.diff) {
+        return '';
+      }
+      const diffInLines = this.diff.split('\n');
+      return diffInLines
+        .map(diffLine => ({line: diffLine}))
+        .map(diffLineArgs => encodeHtmlEntities(diffLineArgs))
+        .map(diffLineArgs => replaceTabWithSpaces(diffLineArgs))
+        .map(diffLineArgs => formatForAddition(diffLineArgs))
+        .map(diffLineArgs => formatForDeletion(diffLineArgs));
+    }
+  },
   watch: {
     '$store.state.git.revision1'() {
-      this.getDiff();
+      this.diff = '';
     },
     '$store.state.git.revision2'() {
       this.getDiff();
