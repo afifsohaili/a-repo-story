@@ -1,9 +1,15 @@
 <template>
-  <div v-if="logs.length">
+  <div v-if="logs.length" class="pane" :class="{'is-collapsed': collapsed}">
     <div>
-      <input type="text" v-model="keyword">
+      <input type="text" v-model="keyword" v-if="!collapsed">
+      <button @click.prevent="toggleCollapse" v-if="!collapsed">
+        &lt;&lt;
+      </button>
+      <button @click.prevent="toggleCollapse" v-else>
+        &gt;&gt;
+      </button>
     </div>
-    <ul>
+    <ul v-if="!collapsed">
       <template v-if="shouldShowAllLogs">
         <li v-for="log in logs" :key="log.hash" :class="isSelected(log.hash) ? 'selected' : ''" @click="setRevision(log.hash)">
           {{log.message}}
@@ -28,7 +34,8 @@ export default {
     return {
       keyword: '',
       logs: [],
-      results: []
+      results: [],
+      collapsed: false
     };
   },
   computed: {
@@ -57,6 +64,9 @@ export default {
     }
   },
   methods: {
+    toggleCollapse() {
+      this.collapsed = !this.collapsed;
+    },
     async filterLogs() {
       const messages = this.logs.map(log => log.message);
       const results = await fuzzy.goAsync(this.keyword, messages);
@@ -83,6 +93,13 @@ export default {
 </script>
 
 <style scoped>
+.pane {
+  background: #fff;
+  left: 0;
+  position: fixed;
+  width: 91%;
+}
+
 ul {
   margin: 0;
   padding: 0;

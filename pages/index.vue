@@ -20,13 +20,6 @@ export default {
 <style scoped>
 .container {
   display: flex;
-}
-
-.pane {
-  flex: 33% 1 0;
-}
-
-.diff {
-  flex: 67% 1 0;
+  width: 100%;
 }
 </style>
