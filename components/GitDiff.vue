@@ -114,4 +114,8 @@ export default {
   padding: 1rem;
   margin-bottom: 1rem;
 }
+
+.diff {
+  display: inline-block;
+}
 </style>
