@@ -1,6 +1,14 @@
 module.exports = {
   mode: 'spa',
-  head: {title: 'a-repo-story'}, // Headers of the page
+  head: {
+    title: 'a-repo-story',
+    link: [
+      {
+        href: '~/assets/font/SourceCodePro-Regular.otf',
+        rel: 'stylesheet'
+      }
+    ]
+  }, // Headers of the page
   loading: false, // Disable default loading bar
   build: {
     extend (config, { isDev, isClient }) {

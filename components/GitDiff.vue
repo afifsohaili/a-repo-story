@@ -107,10 +107,6 @@ export default {
 </script>
 
 <style scoped>
-.wrapper {
-  padding: 1rem;
-}
-
 .error {
   background: #ffebee;
   border: 1px solid #ef5350;

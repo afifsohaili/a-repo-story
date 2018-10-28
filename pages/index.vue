@@ -1,5 +1,5 @@
 <template>
-  <div class="container">
+  <div>
     <commits-selection class="pane"/>
     <git-diff class="diff" />
   </div>
@@ -10,16 +10,6 @@ import CommitsSelection from '~/components/CommitsSelection';
 import GitDiff from '~/components/GitDiff';
 
 export default {
-  components: {GitDiff, CommitsSelection},
-  data() {
-    return {gitPath: process.env.GIT_PATH};
-  }
+  components: {GitDiff, CommitsSelection}
 };
 </script>
-
-<style scoped>
-.container {
-  display: flex;
-  width: 100%;
-}
-</style>

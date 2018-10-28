@@ -96,8 +96,8 @@ export default {
 .pane {
   background: #fff;
   left: 0;
+  max-width: 91%;
   position: fixed;
-  width: 91%;
 }
 
 ul {
