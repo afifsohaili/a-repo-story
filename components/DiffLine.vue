@@ -27,5 +27,6 @@ export default {
 .diff-line {
   font-family: 'Source Code Pro', monospace, sans-serif;
   padding: 0.3rem;
+  white-space: nowrap;
 }
 </style>
