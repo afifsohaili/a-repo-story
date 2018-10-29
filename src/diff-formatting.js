@@ -20,6 +20,7 @@ export const formatForAddition = ({line, ...props}) => {
     match[0].length - encodedPlusClosingBracket.length
   );
   const newLine = [
+    line.substring(0, match.index),
     '<span class="addition">',
     addedCode,
     '</span>'
