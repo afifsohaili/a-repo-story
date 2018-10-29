@@ -1,18 +1,29 @@
 import entities from 'entities';
 
-const additionRegex = /{\+.*?\+}/;
-export const formatForAddition = ({line, ...props}) => {
-  const additions = line.split(additionRegex);
-  console.log('\n', 'additions', additions);
-  const match = line.match(additionRegex);
-  console.log('\n', 'match', match);
+const encodedOpeningBracketPlus = entities.encodeHTML('{+');
+const encodedPlusClosingBracket = entities.encodeHTML('+}');
 
-  const addedCode = match[0].substring(2, match[0].length - 2);
+const additionRegex = new RegExp([
+  encodedOpeningBracketPlus,
+  '.*?',
+  encodedPlusClosingBracket
+].join(''));
+
+export const formatForAddition = ({line, ...props}) => {
+  const match = line.match(additionRegex);
+
+  if (!match) {
+    return {line};
+  }
+  const addedCode = match[0].substring(
+    encodedOpeningBracketPlus.length,
+    match[0].length - encodedPlusClosingBracket.length
+  );
   const newLine = [
-    '<div class="addition">',
-    entities.encodeHTML(addedCode),
-    '</div>'
+    '<span class="addition">',
+    addedCode,
+    '</span>'
   ].join('');
 
-  return {line: newLine};
+  return {line: newLine, ...props};
 };

@@ -56,7 +56,7 @@ export default {
         return;
       }
 
-      this.$git.diff([`${rev1}...${rev2}`], (err, diff) => {
+      this.$git.diff(['--word-diff=plain', `${rev1}...${rev2}`], (err, diff) => {
         if (err) {
           throw err;
         }
@@ -64,7 +64,7 @@ export default {
           this.diff = diff;
           return;
         }
-        this.$git.diff([`${rev2}...${rev1}`], (err, diff) => {
+        this.$git.diff(['--word-diff=plain', `${rev2}...${rev1}`], (err, diff) => {
           if (err) {
             throw err;
           }

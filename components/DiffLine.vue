@@ -16,7 +16,7 @@ export default {
 </script>
 
 <style scoped>
-.addition {
+.diff-line /deep/ .addition {
   background: #e8f5e9;
 }
 
