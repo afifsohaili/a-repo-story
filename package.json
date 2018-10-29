@@ -12,8 +12,9 @@
     }
   },
   "scripts": {
+    "build": "nuxt build && electron-builder",
     "dev": "cross-env NODE_ENV=DEV electron .",
-    "build": "nuxt build && electron-builder"
+    "test": "cross-env NODE_ENV=test jest"
   },
   "dependencies": {
     "entities": "^1.1.2",
@@ -22,7 +23,10 @@
     "simple-git": "^1.104.0"
   },
   "devDependencies": {
+    "babel-core": "^6.26.3",
     "babel-eslint": "^10.0.1",
+    "babel-jest": "^23.6.0",
+    "babel-preset-env": "^1.7.0",
     "cross-env": "^5.1.4",
     "electron": "^3.0.4",
     "electron-builder": "^20.8.1",
@@ -31,6 +35,8 @@
     "eslint-config-xo-space": "^0.20.0",
     "eslint-friendly-formatter": "^4.0.1",
     "eslint-loader": "^2.1.1",
-    "eslint-plugin-vue": "^4.0.0"
+    "eslint-plugin-vue": "^4.0.0",
+    "jest": "^23.6.0",
+    "regenerator-runtime": "^0.12.1"
   }
 }

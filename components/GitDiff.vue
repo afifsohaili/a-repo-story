@@ -16,13 +16,7 @@
 <script>
 import entities from 'entities';
 import DiffLine from '~/components/DiffLine';
-
-const formatForAddition = ({line, ...props}) => {
-  const lineIsAddition =
-    line.startsWith(entities.encodeHTML('+')) &&
-    !line.startsWith(entities.encodeHTML('+++'));
-  return lineIsAddition ? {line, ...props, addition: true} : {line, ...props};
-};
+import {formatForAddition} from '~/src/diff-formatting';
 
 const formatForDeletion = ({line, ...props}) => {
   const lineIsDeletion =
