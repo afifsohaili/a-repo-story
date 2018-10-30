@@ -20,7 +20,7 @@ export default {
   background: #e8f5e9;
 }
 
-.deletion {
+.diff-line /deep/ .deletion {
   background: #ffebee;
 }
 

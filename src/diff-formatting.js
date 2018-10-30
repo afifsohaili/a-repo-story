@@ -1,30 +1,63 @@
 import entities from 'entities';
 
-const encodedOpeningBracketPlus = entities.encodeHTML('{+');
-const encodedPlusClosingBracket = entities.encodeHTML('+}');
+const REGEX_ENCODED_OPENING_BRACKET_PLUS = entities.encodeHTML('{+');
+const REGEX_ENCODED_PLUS_CLOSING_BRACKET = entities.encodeHTML('+}');
+const REGEX_ENCODED_OPENING_BRACKET_MINUS = entities.encodeHTML('[-');
+const REGEX_ENCODED_MINUS_CLOSING_BRACKET = entities.encodeHTML('-]');
+const REGEX_OR = '|';
+const REGEX_ANY_WORD = '.*?';
 
-const additionRegex = new RegExp([
-  encodedOpeningBracketPlus,
-  '.*?',
-  encodedPlusClosingBracket
-].join(''));
+export const splitTokens = ({line, ...props}) => {
+  const newLine = processForAddition(line);
+  const newNewLine = processForDeletion(newLine);
 
-export const formatForAddition = ({line, ...props}) => {
-  const match = line.match(additionRegex);
+  return {line: newNewLine};
+}
 
-  if (!match) {
-    return {line};
+const processForAddition = (line) => {
+  const regex = new RegExp([
+    REGEX_ENCODED_OPENING_BRACKET_PLUS,
+    REGEX_ANY_WORD,
+    REGEX_ENCODED_PLUS_CLOSING_BRACKET
+  ].join(''), 'g')
+
+  let match;
+  const matches = [];
+
+  while(match = regex.exec(line)) {
+    matches.push(match);
   }
-  const addedCode = match[0].substring(
-    encodedOpeningBracketPlus.length,
-    match[0].length - encodedPlusClosingBracket.length
-  );
-  const newLine = [
-    line.substring(0, match.index),
-    '<span class="addition">',
-    addedCode,
-    '</span>'
-  ].join('');
 
-  return {line: newLine, ...props};
-};
+  const finalStr = matches.reduce((str, match) => {
+    const matchWithoutBrackets = match[0].substring(
+      REGEX_ENCODED_OPENING_BRACKET_PLUS.length,
+      match[0].length - REGEX_ENCODED_PLUS_CLOSING_BRACKET.length
+    );
+    return str.replace(match, `<span class="addition">${matchWithoutBrackets}</span>`);
+  }, line);
+  return finalStr;
+}
+
+const processForDeletion = (line) => {
+  const regex = new RegExp([
+    REGEX_ENCODED_OPENING_BRACKET_MINUS,
+    REGEX_ANY_WORD,
+    REGEX_ENCODED_MINUS_CLOSING_BRACKET
+  ].join(''), 'g')
+
+  let match;
+  const matches = [];
+
+  while(match = regex.exec(line)) {
+    matches.push(match);
+  }
+
+  const finalStr = matches.reduce((str, match) => {
+    const matchWithoutBrackets = match[0].substring(
+      REGEX_ENCODED_OPENING_BRACKET_MINUS.length,
+      match[0].length - REGEX_ENCODED_MINUS_CLOSING_BRACKET.length
+    );
+    return str.replace(match, `<span class="deletion">${matchWithoutBrackets}</span>`);
+  }, line);
+  return finalStr;
+}

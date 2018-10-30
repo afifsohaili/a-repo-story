@@ -16,14 +16,7 @@
 <script>
 import entities from 'entities';
 import DiffLine from '~/components/DiffLine';
-import {formatForAddition} from '~/src/diff-formatting';
-
-const formatForDeletion = ({line, ...props}) => {
-  const lineIsDeletion =
-    line.startsWith(entities.encodeHTML('-')) &&
-    !line.startsWith(entities.encodeHTML('---'));
-  return lineIsDeletion ? {line, ...props, deletion: true} : {line, ...props};
-};
+import {formatForAddition, formatForDeletion} from '~/src/diff-formatting';
 
 const replaceTabWithSpaces = ({line, ...props}) => {
   return {
