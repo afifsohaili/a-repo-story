@@ -1,121 +1,60 @@
 <template>
-  <div v-if="logs.length" class="pane" :class="{'is-collapsed': collapsed}">
-    <div>
-      <input type="text" v-model="keyword" v-if="!collapsed">
-      <button @click.prevent="toggleCollapse" v-if="!collapsed">
-        &lt;&lt;
-      </button>
-      <button @click.prevent="toggleCollapse" v-else>
-        &gt;&gt;
-      </button>
-    </div>
-    <ul v-if="!collapsed">
-      <template v-if="shouldShowAllLogs">
-        <li v-for="log in logs" :key="log.hash" :class="isSelected(log.hash) ? 'selected' : ''" @click="setRevision(log.hash)">
-          {{log.message}}
-        </li>
-      </template>
-      <li v-if="!logs.length">No logs found. Not a git folder?</li>
-      <template v-if="shouldShowSearchResults">
-        <li v-for="result in results" :key="result.hash" @click="setRevision(result.hash)">
-          {{result.message}}
-        </li>
-      </template>
-      <li v-if="noResultsFound">No results found for <em>{{keyword}}</em></li>
-    </ul>
+  <div class="commit-selection">
+    <button class="selector">
+      {{commit1.text}}
+    </button>
+    <button class="selector">
+      {{commit2.text}}
+    </button>
   </div>
 </template>
 
 <script>
 import fuzzy from 'fuzzysort';
 
+console.log('\n', 'fuzzy', fuzzy);
+
 export default {
   data() {
     return {
-      keyword: '',
-      logs: [],
-      results: [],
-      collapsed: false
+      commit1: {
+        text: 'Commit #1'
+      },
+      commit2: {
+        text: 'Commit #2'
+      }
     };
-  },
-  computed: {
-    noResultsFound() {
-      return this.keyword.length && !this.results.length;
-    },
-    shouldShowAllLogs() {
-      return this.logs.length && !this.keyword.length;
-    },
-    shouldShowSearchResults() {
-      return this.logs.length && this.keyword.length && this.results.length;
-    }
-  },
-  mounted() {
-    this.$git.log({'--pretty': 'oneline', '--max-parents': '1'}, (err, logs) => {
-      if (err) {
-        throw err;
-      }
-      this.logs = logs.all;
-      this.noResults = false;
-    });
-  },
-  watch: {
-    keyword() {
-      this.filterLogs();
-    }
-  },
-  methods: {
-    toggleCollapse() {
-      this.collapsed = !this.collapsed;
-    },
-    async filterLogs() {
-      const messages = this.logs.map(log => log.message);
-      const results = await fuzzy.goAsync(this.keyword, messages);
-      const resultsMessages = results.map(result => result.target);
-      this.results = this.logs.filter(log => resultsMessages.includes(log.message));
-    },
-    isSelected(commitHash) {
-      const {revision1, revision2} = this.$store.state.git;
-      return [revision1, revision2].some(revision => revision === commitHash);
-    },
-    setRevision(commitHash) {
-      const {revision1, revision2} = this.$store.state.git;
-      if (revision1 && !revision2) {
-        this.$store.commit('git/setRevision', {key: 'revision2', revision: commitHash});
-      } else if (revision1 && revision2) {
-        this.$store.commit('git/setRevision', {key: 'revision1', revision: commitHash});
-        this.$store.commit('git/setRevision', {key: 'revision2', revision: undefined});
-      } else {
-        this.$store.commit('git/setRevision', {key: 'revision1', revision: commitHash});
-      }
-    }
   }
 };
 </script>
 
 <style scoped>
-.pane {
-  background: #fff;
-  left: 0;
-  max-width: 91%;
+.commit-selection {
+  background: var(--color-white);
+  padding: var(--spacing);
   position: fixed;
+  top: 0;
 }
 
-ul {
-  margin: 0;
-  padding: 0;
-}
-
-li {
-  list-style: none;
+.selector {
+  border-radius: var(--border-radius-l);
+  border: 1px solid var(--color-primary);
   cursor: pointer;
+  font-size: 14px;
+  padding: var(--spacing);
+  padding-right: calc(var(--spacing) * 3);
+  position: relative;
 }
 
-li:hover {
-  background: #e5e5e5;
-}
-
-.selected {
-  background: #909090;
-  color: #fff;
+.selector::after {
+  border-color: #007bff transparent transparent transparent;
+  border-style: solid;
+  border-width: 6.1px 3.5px 0 3.5px;
+  content: " ";
+  height: 0;
+  position: absolute;
+  right: calc(var(--spacing));
+  top: calc(50% - 3px);
+  width: 0;
 }
 </style>
