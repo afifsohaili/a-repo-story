@@ -17,11 +17,17 @@ export default {
 
 <style scoped>
 .diff-line /deep/ .addition {
+  background: #c8e6c9;
+  border-radius: 3px;
+}
+
+.diff-line.addition {
   background: #e8f5e9;
 }
 
 .diff-line /deep/ .deletion {
   background: #ffebee;
+  border-radius: 3px;
 }
 
 .diff-line {

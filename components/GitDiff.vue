@@ -16,7 +16,7 @@
 <script>
 import entities from 'entities';
 import DiffLine from '~/components/DiffLine';
-import {formatForAddition, formatForDeletion} from '~/src/diff-formatting';
+import {processLine} from '~/src/diff-formatting';
 
 const replaceTabWithSpaces = ({line, ...props}) => {
   return {
@@ -78,8 +78,7 @@ export default {
         .map(diffLine => ({line: diffLine}))
         .map(diffLineArgs => encodeHtmlEntities(diffLineArgs))
         .map(diffLineArgs => replaceTabWithSpaces(diffLineArgs))
-        .map(diffLineArgs => formatForAddition(diffLineArgs))
-        .map(diffLineArgs => formatForDeletion(diffLineArgs));
+        .map(diffLineArgs => processLine(diffLineArgs));
     }
   },
   watch: {
