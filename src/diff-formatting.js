@@ -59,10 +59,12 @@ const processForDeletion = line => {
 export const processLine = ({line, ...props}) => {
   const processedAdditionLine = processForAddition(line);
   const processedLine = processForDeletion(processedAdditionLine);
-
+  const hasAddition = processedAdditionLine !== line;
+  const hasOnlyDeletion = !hasAddition && line !== processedLine;
   return {
     line: processedLine,
-    addition: processedAdditionLine !== line,
+    addition: hasAddition,
+    deletion: hasOnlyDeletion,
     ...props
   };
 };

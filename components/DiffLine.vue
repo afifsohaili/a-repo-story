@@ -21,10 +21,6 @@ export default {
   border-radius: 3px;
 }
 
-.diff-line.addition {
-  background: #e8f5e9;
-}
-
 .diff-line /deep/ .deletion {
   background: #ffebee;
   border-radius: 3px;
@@ -34,5 +30,13 @@ export default {
   font-family: 'Source Code Pro', monospace, sans-serif;
   padding: 0.3rem;
   white-space: nowrap;
+}
+
+.diff-line.addition {
+  background: #e8f5e9;
+}
+
+.diff-line.deletion {
+  background: #ffebee;
 }
 </style>

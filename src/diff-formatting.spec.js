@@ -119,4 +119,17 @@ describe('processLine', () => {
 
     expect(result.addition).toBe(true);
   })
+
+  it('should return deletion: true when there is only deletion on the line', () => {
+    const mixedLine = encodeHTML('{+added+}[-deleted-]');
+    const lineWithAddition = encodeHTML('{+added+}');
+    const lineWithDeletion = encodeHTML('[-deleted-]');
+    const mixedLineResult = processLine({line: mixedLine});
+    const lineWithAdditionResult = processLine({line: lineWithAddition});
+    const lineWithDeletionResult = processLine({line: lineWithDeletion});
+
+    expect(mixedLineResult.deletion).toBe(false);
+    expect(lineWithAdditionResult.deletion).toBe(false);
+    expect(lineWithDeletionResult.deletion).toBe(true);
+  })
 })
