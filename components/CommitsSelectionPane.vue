@@ -1,22 +1,22 @@
 <template>
   <div class="commit-selection">
-    <commits-selection>
+    <select-commit-button>
       {{commit1.text}}
-    </commits-selection>
-    <commits-selection>
+    </select-commit-button>
+    <select-commit-button>
       {{commit2.text}}
-    </commits-selection>
+    </select-commit-button>
   </div>
 </template>
 
 <script>
 import fuzzy from 'fuzzysort';
-import CommitsSelection from '~/components/CommitsSelection';
+import SelectCommitButton from '~/components/SelectCommitButton';
 
 console.log('\n', 'fuzzy', fuzzy);
 
 export default {
-  components: {CommitsSelection},
+  components: {SelectCommitButton},
   data() {
     return {
       commit1: {

@@ -1,13 +1,12 @@
 const gitLog = gitService => {
   return {
-    getAllLogs() {
+    getLatestLogs() {
       return new Promise((resolve, reject) => {
         gitService.log([], (err, logs) => {
           if (err) {
             reject(err);
           }
-          console.log('\n', 'logs', logs);
-          resolve(logs.all);
+          resolve(logs.all.slice(0, 5));
         });
       });
     }
