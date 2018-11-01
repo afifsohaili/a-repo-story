@@ -1,41 +1,52 @@
 <template>
-  <div class="commit-selection">
-    <button class="selector">
-      {{commit1.text}}
+  <div class="commits-selection">
+    <button class="selector" @click.prevent="toggleSelection">
+      <slot />
     </button>
-    <button class="selector">
-      {{commit2.text}}
-    </button>
+    <div class="selections" v-if="isSelecting">
+      <div class="error" v-if="error.length">{{error}}</div>
+      <div
+        v-for="commit in commits"
+        class="commit"
+        :key="commit.hash">
+        {{commit.message}}
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
-import fuzzy from 'fuzzysort';
-
-console.log('\n', 'fuzzy', fuzzy);
+import gitLogService from '~/src/git/log';
 
 export default {
   data() {
     return {
-      commit1: {
-        text: 'Commit #1'
-      },
-      commit2: {
-        text: 'Commit #2'
-      }
+      isSelecting: false,
+      error: '',
+      commits: []
     };
+  },
+  methods: {
+    async getCommits() {
+      try {
+        const commits = await gitLogService(this.$git).getAllLogs();
+        this.commits = commits;
+      } catch (err) {
+        console.error('\n', 'err', err);
+        this.error = err;
+      }
+    },
+    toggleSelection() {
+      this.isSelecting = !this.isSelecting;
+      if (!this.commits.length) {
+        this.getCommits();
+      }
+    }
   }
 };
 </script>
 
 <style scoped>
-.commit-selection {
-  background: var(--color-white);
-  padding: var(--spacing);
-  position: fixed;
-  top: 0;
-}
-
 .selector {
   border-radius: var(--border-radius-l);
   border: 1px solid var(--color-primary);
@@ -56,5 +67,37 @@ export default {
   right: calc(var(--spacing));
   top: calc(50% - 3px);
   width: 0;
+}
+
+.commits-selection {
+  display: inline-block;
+  position: relative;
+}
+
+.selections {
+  background: var(--color-primary);
+  border-radius: var(--border-radius-l);
+  color: var(--color-white);
+  margin: 0;
+  max-height: 500%;
+  overflow: hidden;
+  padding: 0;
+  position: absolute;
+  top: calc(100%);
+  width: 300%;
+}
+
+.commit {
+  cursor: pointer;
+  list-style: none;
+  overflow: hidden;
+  overflow: hidden;
+  padding: var(--spacing);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.commit:hover {
+  background: var(--color-blue-7);
 }
 </style>

@@ -1,15 +1,18 @@
 <template>
   <div>
-    <commits-selection class="pane"/>
+    <commits-selection-pane class="pane"/>
     <git-diff class="diff" />
   </div>
 </template>
 
 <script>
-import CommitsSelection from '~/components/CommitsSelection';
+import CommitsSelectionPane from '~/components/CommitsSelectionPane';
 import GitDiff from '~/components/GitDiff';
 
 export default {
-  components: {GitDiff, CommitsSelection}
+  components: {
+    GitDiff,
+    CommitsSelectionPane
+  }
 };
 </script>
