@@ -1,10 +1,11 @@
-const getLatestLogs = gitService => {
+const getLogs = (gitService, totalCommits) => {
   return new Promise((resolve, reject) => {
-    gitService.log([], (err, logs) => {
+    const revisionsRange = totalCommits ? [`HEAD~${totalCommits}...HEAD`] : [];
+    gitService.log(revisionsRange, (err, logs) => {
       if (err) {
         reject(err);
       }
-      resolve(logs.all.slice(0, 5));
+      resolve(logs.all);
     });
   });
 };
@@ -12,7 +13,10 @@ const getLatestLogs = gitService => {
 export default gitService => {
   return {
     getLatestLogs() {
-      return getLatestLogs(gitService);
+      return getLogs(gitService, 3);
+    },
+    getAllLogs() {
+      return getLogs(gitService, 0);
     }
   };
 };
