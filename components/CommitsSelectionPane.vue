@@ -1,9 +1,9 @@
 <template>
   <div class="commit-selection">
-    <select-commit-button>
+    <select-commit-button revision-key="revision1">
       {{commit1.text}}
     </select-commit-button>
-    <select-commit-button>
+    <select-commit-button revision-key="revision2">
       {{commit2.text}}
     </select-commit-button>
   </div>
@@ -36,5 +36,8 @@ export default {
   padding: var(--spacing);
   position: fixed;
   top: 0;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
 }
 </style>

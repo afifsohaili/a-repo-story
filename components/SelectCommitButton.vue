@@ -1,9 +1,17 @@
 <template>
   <div class="select-commit-button">
-    <button class="selector" @click.prevent="toggleSelection">
-      <slot />
-    </button>
-    <commits-selection :is-selecting="isSelecting"/>
+    <a class="selector" @click.prevent="toggleSelection">
+      <span v-if="!selectedRevision.length" >
+        <slot/>
+      </span>
+      <span v-else>
+        {{selectedRevision}}
+      </span>
+    </a>
+    <commits-selection
+      :is-selecting="isSelecting"
+      :toggle-selection="toggleSelection"
+      :revision-key="revisionKey"/>
   </div>
 </template>
 
@@ -13,6 +21,17 @@ import CommitsSelection from '~/components/CommitsSelection';
 export default {
   components: {
     CommitsSelection
+  },
+  props: {
+    revisionKey: {
+      type: String,
+      default: undefined
+    }
+  },
+  computed: {
+    selectedRevision() {
+      return (this.$store.state.git && this.$store.state.git[this.revisionKey]) || '';
+    }
   },
   data() {
     return {isSelecting: false};
@@ -30,10 +49,14 @@ export default {
   border-radius: var(--border-radius-l);
   border: 1px solid var(--color-primary);
   cursor: pointer;
+  display: inline-block;
   font-size: 14px;
+  overflow: hidden;
+  text-overflow: ellipsis;
   padding: var(--spacing);
   padding-right: calc(var(--spacing) * 3);
   position: relative;
+  white-space: nowrap;
 }
 
 .selector::after {
@@ -51,5 +74,13 @@ export default {
 .select-commit-button {
   display: inline-block;
   position: relative;
+}
+
+.select-commit-button a span {
+  display: inline-block;
+  max-width: 100px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 </style>

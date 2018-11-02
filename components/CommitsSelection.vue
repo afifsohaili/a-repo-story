@@ -4,7 +4,8 @@
     <div
       v-for="commit in commits"
       class="commit"
-      :key="commit.hash">
+      :key="commit.hash"
+      @click.prevent="selectCommit(commit.hash)">
       {{commit.message}}
     </div>
   </div>
@@ -18,7 +19,12 @@ export default {
     isSelecting: {
       type: Boolean,
       default: false
-    }
+    },
+    revisionKey: {
+      type: String,
+      default: undefined
+    },
+    toggleSelection: Function
   },
   data() {
     return {
@@ -29,11 +35,15 @@ export default {
   methods: {
     async getCommits() {
       try {
-        this.commits = await gitLogService(this.$git).getLatestLogs();
+        const service = gitLogService(this.$git);
+        this.commits = await service.getLatestLogs();
       } catch (err) {
-        console.error('\n', 'err', err);
         this.error = err;
       }
+    },
+    selectCommit(commitHash) {
+      this.$store.commit('git/setRevision', {key: this.revisionKey, revision: commitHash});
+      this.toggleSelection();
     }
   },
   watch: {
