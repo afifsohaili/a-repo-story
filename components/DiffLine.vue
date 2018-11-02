@@ -19,6 +19,7 @@ export default {
 .diff-line /deep/ .addition {
   background: #c8e6c9;
   border-radius: 3px;
+  min-width: 100%;
 }
 
 .diff-line /deep/ .deletion {

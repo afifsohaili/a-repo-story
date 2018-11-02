@@ -103,5 +103,6 @@ export default {
 
 .diff {
   display: inline-block;
+  min-width: 100%;
 }
 </style>
