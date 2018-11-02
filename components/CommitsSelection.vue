@@ -2,7 +2,7 @@
   <div class="selections" v-if="isSelecting">
     <div class="error" v-if="error.length">{{error}}</div>
     <input
-      placeholder="Input the commit message"
+      placeholder="Search for commit message..."
       type="text"
       class="filter"
       @input="searchCommits"/>
