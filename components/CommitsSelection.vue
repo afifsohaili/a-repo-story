@@ -47,6 +47,10 @@ export default {
   methods: {
     async searchCommits(e) {
       const value = e.target.value;
+      if (value.length === 0) {
+        this.getCommits();
+        return;
+      }
       try {
         const service = gitLogService(this.$git);
         const commits = await service.getAllLogs();

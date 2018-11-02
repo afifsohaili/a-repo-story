@@ -13,7 +13,7 @@ const getLogs = (gitService, totalCommits) => {
 export default gitService => {
   return {
     getLatestLogs() {
-      return getLogs(gitService, 3);
+      return getLogs(gitService, 5);
     },
     getAllLogs() {
       return getLogs(gitService, 0);
