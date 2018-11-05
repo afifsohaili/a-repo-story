@@ -1,5 +1,7 @@
 <template>
-  <div class="wrapper">
+  <div
+    class="wrapper"
+    :class="commitsSelectionCollapsed && 'is-commits-selection-collapsed'">
     <p class="error" v-if="error.length">
       {{error}}
     </p>
@@ -69,6 +71,9 @@ export default {
     }
   },
   computed: {
+    commitsSelectionCollapsed() {
+      return this.$store.state['commits-selection'].collapsed;
+    },
     styledDiff() {
       if (!this.diff) {
         return '';
@@ -83,7 +88,7 @@ export default {
   },
   watch: {
     '$store.state.git.revision1'() {
-      this.diff = '';
+      this.getDiff();
     },
     '$store.state.git.revision2'() {
       this.getDiff();
@@ -93,6 +98,14 @@ export default {
 </script>
 
 <style scoped>
+.wrapper {
+  padding: var(--spacing) 0;
+}
+
+.wrapper.is-commits-selection-collapsed {
+  margin-top: 80px;
+}
+
 .error {
   background: #ffebee;
   border: 1px solid #ef5350;
