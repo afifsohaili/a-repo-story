@@ -1,6 +1,6 @@
 <template>
   <div class="page">
-    <commits-selection-pane v-if="!selectionsCollapsed"/>
+    <commits-sidebar v-if="!selectionsCollapsed"/>
     <git-diff class="diff" />
     <button
       class="collapsible"
@@ -12,13 +12,13 @@
 </template>
 
 <script>
-import CommitsSelectionPane from '~/components/CommitsSelectionPane';
+import CommitsSidebar from '~/components/CommitsSidebar';
 import GitDiff from '~/components/GitDiff';
 
 export default {
   components: {
-    GitDiff,
-    CommitsSelectionPane
+    CommitsSidebar,
+    GitDiff
   },
   computed: {
     selectionsCollapsed() {
@@ -43,12 +43,14 @@ export default {
   cursor: pointer;
   padding: var(--spacing);
   position: fixed;
-  right: var(--spacing);
+  left: calc(60% + var(--spacing));
   transition: all 0.3s ease-out;
+  transform: rotate(90deg);
 }
 
 .collapsible.collapsed {
-  transform: rotate(180deg);
+  transform: rotate(-90deg);
+  left: var(--spacing);
 }
 
 .collapsible:hover {

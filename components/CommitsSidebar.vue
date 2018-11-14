@@ -1,5 +1,5 @@
 <template>
-  <div class="selections" v-if="isSelecting">
+  <div class="selections">
     <div class="error" v-if="error.length">{{error}}</div>
     <input
       placeholder="Search for commit message..."
@@ -13,7 +13,7 @@
       :title="commit.message"
       @click.prevent="selectCommit(commit.hash)">
       <span class="commit-message">{{commit.message}}</span>
-      <span class="commit-hash">{{commit.hash | takeFirstSevenLetters}}</span>
+      <span class="commit-hash">{{commit.hash | takeFirstElevenLetters}}</span>
     </div>
   </div>
 </template>
@@ -24,14 +24,11 @@ import fuzzy from 'fuzzysort';
 
 export default {
   filters: {
-    takeFirstSevenLetters(value) {
-      return value.substring(0, 7);
+    takeFirstElevenLetters(value) {
+      return value.substring(0, 11);
     }
   },
   props: {
-    isSelecting: {
-      type: Boolean, default: false
-    },
     revisionKey: {
       type: String,
       default: undefined
@@ -40,15 +37,17 @@ export default {
   },
   data() {
     return {
+      commits: [],
       error: '',
-      commits: []
+      revision1: undefined,
+      revision2: undefined
     };
   },
   methods: {
     async searchCommits(e) {
       const value = e.target.value;
       if (value.length === 0) {
-        this.getCommits();
+        this.getLogs();
         return;
       }
       try {
@@ -60,53 +59,56 @@ export default {
         this.error = err;
       }
     },
-    async getCommits() {
+    async getLogs() {
       try {
         const service = gitLogService(this.$git);
-        this.commits = await service.getLatestLogs();
+        this.commits = await service.getAllLogs();
       } catch (err) {
         this.error = err;
       }
     },
     selectCommit(commitHash) {
-      this.$store.commit('git/setRevision', {key: this.revisionKey, revision: commitHash});
-      this.toggleSelection();
+      if (this.revision1 && !this.revision2) {
+        this.$store.commit('git/setRevision', {key: 'revision2', revision: commitHash});
+        this.revision2 = commitHash;
+        return;
+      }
+      this.revision1 = commitHash;
+      this.$store.commit('git/setRevision', {key: 'revision1', revision: commitHash});
+      this.revision2 = undefined;
+      this.$store.commit('git/setRevision', {key: 'revision2', revision: undefined});
     }
   },
-  watch: {
-    isSelecting() {
-      if (this.isSelecting && !this.commits.length) {
-        this.getCommits();
-      }
-    }
+  mounted() {
+    this.getLogs();
   }
 };
 </script>
 
 <style scoped>
 .selections {
-  background: var(--color-primary);
+  background: var(--color-white);
   border-radius: var(--border-radius-l);
-  color: var(--color-white);
+  border: 1px solid var(--color-light-gray-2);
+  left: 0;
   margin: 0;
   overflow: hidden;
   padding: 0;
-  position: absolute;
-  top: calc(100%);
-  width: 300%;
+  position: fixed;
+  top: 0;
+  width: 60%;
 }
 
 .commit-hash {
-  color: var(--color-light-gray-2);
   display: inline-block;
-  width: 17%;
   position: absolute;
-  right: 0;
+  right: var(--spacing);
+  max-width: 20%;
 }
 
 .commit-message {
   display: inline-block;
-  width: 83%;
+  width: calc(80% - var(--spacing));
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -120,21 +122,19 @@ export default {
 }
 
 .commit:hover {
-  background: var(--color-blue-7);
+  background: var(--color-light-gray-2);
 }
 
 .filter {
   background: transparent;
   border: 0 none;
-  border-bottom: 1px solid var(--color-blue-7);
-  margin: var(--spacing);
-  padding: var(--spacing);
+  border-bottom: 1px solid var(--color-light-gray-2);
+  padding: calc(var(--spacing) * 2) var(--spacing);
   width: calc(100% - (var(--spacing) * 2));
 }
 
 .filter,
 .filter::placeholder {
-  color: var(--color-white);
   font-size: 0.9rem;
 }
 </style>

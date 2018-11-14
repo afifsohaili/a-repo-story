@@ -100,10 +100,11 @@ export default {
 <style scoped>
 .wrapper {
   padding: var(--spacing) 0;
+  margin-left: 60%;
 }
 
 .wrapper.is-commits-selection-collapsed {
-  margin-top: 80px;
+  margin-left: 0;
 }
 
 .error {
