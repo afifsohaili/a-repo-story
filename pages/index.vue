@@ -1,6 +1,6 @@
 <template>
   <div class="page">
-    <commits-sidebar v-if="!selectionsCollapsed"/>
+    <commits-sidebar v-show="!selectionsCollapsed"/>
     <git-diff class="diff" />
     <button
       class="collapsible"
