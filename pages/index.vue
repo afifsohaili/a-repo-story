@@ -1,6 +1,7 @@
 <template>
   <div class="page">
     <commits-sidebar v-show="!selectionsCollapsed"/>
+    <commits-controls/>
     <git-diff class="diff" />
     <button
       class="collapsible"
@@ -12,11 +13,13 @@
 </template>
 
 <script>
+import CommitsControls from '~/components/CommitsControls';
 import CommitsSidebar from '~/components/CommitsSidebar';
 import GitDiff from '~/components/GitDiff';
 
 export default {
   components: {
+    CommitsControls,
     CommitsSidebar,
     GitDiff
   },

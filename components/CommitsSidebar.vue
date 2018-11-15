@@ -73,6 +73,7 @@ export default {
         this.selectMultipleCommits(commitHash);
       } else {
         this.selectSingleCommits(commitHash);
+        this.collapseAfterSelection();
       }
     },
     selectMultipleCommits(commitHash) {
@@ -89,7 +90,6 @@ export default {
       this.$store.commit('git/setRevision', {key: 'revision1', revision: commitHash});
       this.revision2 = undefined;
       this.$store.commit('git/setRevision', {key: 'revision2', revision: undefined});
-      this.collapseAfterSelection();
     },
     collapseAfterSelection() {
       this.$store.commit('commits-selection/collapseSelection', true);
