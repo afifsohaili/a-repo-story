@@ -11,7 +11,7 @@
       class="commit"
       :key="commit.hash"
       :title="commit.message"
-      @click.prevent="selectCommit(commit.hash)">
+      @click.prevent="selectCommit($event, commit.hash)">
       <span class="commit-message">{{commit.message}}</span>
       <span class="commit-hash">{{commit.hash | takeFirstElevenLetters}}</span>
     </div>
@@ -67,16 +67,32 @@ export default {
         this.error = err;
       }
     },
-    selectCommit(commitHash) {
+    selectCommit(event, commitHash) {
+      if (event.shiftKey) {
+        document.getSelection().removeAllRanges();
+        this.selectMultipleCommits(commitHash);
+      } else {
+        this.selectSingleCommits(commitHash);
+      }
+    },
+    selectMultipleCommits(commitHash) {
       if (this.revision1 && !this.revision2) {
         this.$store.commit('git/setRevision', {key: 'revision2', revision: commitHash});
         this.revision2 = commitHash;
-        return;
+        this.collapseAfterSelection();
+      } else {
+        this.selectSingleCommits(commitHash);
       }
+    },
+    selectSingleCommits(commitHash) {
       this.revision1 = commitHash;
       this.$store.commit('git/setRevision', {key: 'revision1', revision: commitHash});
       this.revision2 = undefined;
       this.$store.commit('git/setRevision', {key: 'revision2', revision: undefined});
+      this.collapseAfterSelection();
+    },
+    collapseAfterSelection() {
+      this.$store.commit('commits-selection/collapseSelection', true);
     }
   },
   mounted() {

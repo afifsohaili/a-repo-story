@@ -46,25 +46,34 @@ export default {
       const rev1 = this.$store.state.git.revision1;
       const rev2 = this.$store.state.git.revision2;
 
-      if (![rev1, rev2].every(rev => rev)) {
-        this.error = 'Select two revisions';
-        return;
-      }
-
-      this.$git.diff(['--word-diff=plain', `${rev1}...${rev2}`], (err, diff) => {
-        if (err) {
-          throw err;
-        }
-        if (diff) {
-          this.diff = diff;
-          return;
-        }
-        this.$git.diff(['--word-diff=plain', `${rev2}...${rev1}`], (err, diff) => {
+      if ([rev1, rev2].every(rev => rev)) {
+        return this.$git.diff(['--word-diff=plain', `${rev1}...${rev2}`], (err, diff) => {
           if (err) {
+            this.error = err.message;
             throw err;
           }
-          this.diff = diff;
+          if (diff) {
+            this.diff = diff;
+            return;
+          }
+          this.$git.diff(['--word-diff=plain', `${rev2}...${rev1}`], (err, diff) => {
+            if (err) {
+              this.error = err.message;
+              throw err;
+            }
+            this.diff = diff;
+          });
         });
+      }
+
+      this.$git.show(['--word-diff=plain', rev1], (err, show) => {
+        if (err) {
+          this.error = err;
+          throw err;
+        }
+        if (show) {
+          this.diff = show;
+        }
       });
 
       this.error = '';
