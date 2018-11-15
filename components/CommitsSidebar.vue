@@ -130,7 +130,7 @@ export default {
   border: 0 none;
   border-bottom: 1px solid var(--color-light-gray-2);
   padding: calc(var(--spacing) * 2) var(--spacing);
-  width: calc(100% - (var(--spacing) * 2));
+  width: 100%;
 }
 
 .filter,

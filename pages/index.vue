@@ -49,7 +49,7 @@ export default {
 }
 
 .collapsible.collapsed {
-  transform: rotate(-90deg);
+  transform: rotate(270deg);
   left: var(--spacing);
 }
 
