@@ -6,27 +6,19 @@
       type="text"
       class="filter"
       @input="searchCommits"/>
-    <div
+    <commit-menu-item
       v-for="commit in commits"
-      class="commit"
-      :key="commit.hash"
-      :title="commit.message"
-      @click.prevent="selectCommit($event, commit.hash)">
-      <span class="commit-message">{{commit.message}}</span>
-      <span class="commit-hash">{{commit.hash | takeFirstElevenLetters}}</span>
-    </div>
+      :key="commit.hash + commit.hash"
+      :commit="commit"/>
   </div>
 </template>
 
 <script>
 import fuzzy from 'fuzzysort';
+import CommitMenuItem from '~/components/CommitMenuItem';
 
 export default {
-  filters: {
-    takeFirstElevenLetters(value) {
-      return value.substring(0, 11);
-    }
-  },
+  components: {CommitMenuItem},
   props: {
     revisionKey: {
       type: String,
@@ -47,6 +39,10 @@ export default {
     }
   },
   methods: {
+    isCommitSelected(commitHash) {
+      return this.$store.state.revision1 === commitHash ||
+        this.$store.state.revision2 === commitHash;
+    },
     async searchCommits(e) {
       const value = e.target.value;
       if (value.length === 0) {
@@ -59,33 +55,6 @@ export default {
       } catch (err) {
         this.error = err;
       }
-    },
-    selectCommit(event, commitHash) {
-      if (event.shiftKey) {
-        document.getSelection().removeAllRanges();
-        this.selectMultipleCommits(commitHash);
-      } else {
-        this.selectSingleCommits(commitHash);
-        this.collapseAfterSelection();
-      }
-    },
-    selectMultipleCommits(commitHash) {
-      if (this.revision1 && !this.revision2) {
-        this.$store.commit('git/setRevision', {key: 'revision2', revision: commitHash});
-        this.revision2 = commitHash;
-        this.collapseAfterSelection();
-      } else {
-        this.selectSingleCommits(commitHash);
-      }
-    },
-    selectSingleCommits(commitHash) {
-      this.revision1 = commitHash;
-      this.$store.commit('git/setRevision', {key: 'revision1', revision: commitHash});
-      this.revision2 = undefined;
-      this.$store.commit('git/setRevision', {key: 'revision2', revision: undefined});
-    },
-    collapseAfterSelection() {
-      this.$store.commit('commits-selection/collapseSelection', true);
     }
   }
 };
@@ -103,32 +72,6 @@ export default {
   position: fixed;
   top: 0;
   width: 60%;
-}
-
-.commit-hash {
-  display: inline-block;
-  position: absolute;
-  right: var(--spacing);
-  max-width: 20%;
-}
-
-.commit-message {
-  display: inline-block;
-  width: calc(80% - var(--spacing));
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.commit {
-  position: relative;
-  cursor: pointer;
-  list-style: none;
-  padding: var(--spacing);
-}
-
-.commit:hover {
-  background: var(--color-light-gray-2);
 }
 
 .filter {

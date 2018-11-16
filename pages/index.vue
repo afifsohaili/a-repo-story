@@ -42,21 +42,21 @@ export default {
 
 <style scoped>
 .collapsible {
-  top: var(--spacing);
   background: var(--color-light-gray-2);
   border-radius: 100%;
   border: 0 none;
   cursor: pointer;
+  left: calc(60% + var(--spacing));
   padding: var(--spacing);
   position: fixed;
-  left: calc(60% + var(--spacing));
+  top: var(--spacing);
+  transform: rotate(-90deg);
   transition: all 0.3s ease-out;
-  transform: rotate(90deg);
 }
 
 .collapsible.collapsed {
-  transform: rotate(270deg);
   left: var(--spacing);
+  transform: rotate(90deg);
 }
 
 .collapsible:hover {
