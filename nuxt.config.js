@@ -20,6 +20,10 @@ module.exports = {
           loader: 'eslint-loader',
           exclude: /(node_modules)/
         });
+        // Extend only webpack config for client-bundle
+        if (isClient) {
+          config.devtool = '#source-map';
+        }
       }
       // Extend only webpack config for client-bundle
       if (isClient) {

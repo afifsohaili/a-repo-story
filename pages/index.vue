@@ -33,6 +33,9 @@ export default {
       const currentState = this.$store.state['commits-selection'].collapsed;
       this.$store.commit('commits-selection/collapseSelection', !currentState);
     }
+  },
+  async mounted() {
+    await this.$store.dispatch('git/getLogs', this.$git);
   }
 };
 </script>

@@ -19,7 +19,6 @@
 </template>
 
 <script>
-import gitLogService from '~/src/git/log';
 import fuzzy from 'fuzzysort';
 
 export default {
@@ -37,32 +36,26 @@ export default {
   },
   data() {
     return {
-      commits: [],
       error: '',
       revision1: undefined,
       revision2: undefined
     };
   },
+  computed: {
+    commits() {
+      return this.$store.state.git.commits;
+    }
+  },
   methods: {
     async searchCommits(e) {
       const value = e.target.value;
       if (value.length === 0) {
-        this.getLogs();
         return;
       }
       try {
-        const service = gitLogService(this.$git);
-        const commits = await service.getAllLogs();
+        const commits = this.$store.state.git.commits;
         const filtered = await fuzzy.goAsync(value, commits, {key: 'message'});
         this.commits = filtered.map(searchResult => searchResult.obj);
-      } catch (err) {
-        this.error = err;
-      }
-    },
-    async getLogs() {
-      try {
-        const service = gitLogService(this.$git);
-        this.commits = await service.getAllLogs();
       } catch (err) {
         this.error = err;
       }
@@ -94,9 +87,6 @@ export default {
     collapseAfterSelection() {
       this.$store.commit('commits-selection/collapseSelection', true);
     }
-  },
-  mounted() {
-    this.getLogs();
   }
 };
 </script>
