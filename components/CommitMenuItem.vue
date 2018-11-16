@@ -1,7 +1,7 @@
 <template>
   <div
     class="commit"
-    :class="isSelected && 'selected'"
+    :class="contextualLabels"
     :title="commit.message"
     @click.prevent="selectCommit($event)">
     <span class="commit-message">{{commit.message}}</span>
@@ -18,6 +18,23 @@ export default {
     }
   },
   computed: {
+    contextualLabels() {
+      return {
+        selected: this.isSelected,
+        intermediary: this.isIntermediary
+      };
+    },
+    isIntermediary() {
+      const {revision1, revision2, commits} = this.$store.state.git;
+      if (![revision1, revision2].every(rev => rev)) {
+        return;
+      }
+      const indexRevision1 = commits.findIndex(commit => commit.hash === revision1);
+      const indexRevision2 = commits.findIndex(commit => commit.hash === revision2);
+      const indexCurrentCommit = commits.findIndex(commit => commit.hash === this.commit.hash);
+
+      return indexCurrentCommit > indexRevision1 && indexCurrentCommit < indexRevision2;
+    },
     isSelected() {
       const revision1 = this.$store.state.git.revision1;
       const revision2 = this.$store.state.git.revision2;
@@ -92,5 +109,10 @@ export default {
 .commit.selected {
   background: var(--color-primary);
   color: var(--color-white);
+}
+
+.commit.intermediary {
+  background: var(--color-blue-5);
+  color: var(--color-blue-2);
 }
 </style>

@@ -11,6 +11,8 @@ html, body {
 
 :root {
   --color-white: #fff;
+  --color-blue-2: #90caf9;
+  --color-blue-5: #2196f3;
   --color-blue-6: #1e88e5;
   --color-blue-7: #1976d2;
   --color-light-gray-2: #f5f5f5;
