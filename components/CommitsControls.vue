@@ -7,7 +7,14 @@
       <span class="rev-2" v-if="rev2 && rev2.length">
         {{rev2 | getLastElevenChars}}
       </span>
-      <div class="controls"></div>
+      <div class="controls">
+        <button :disabled="hasNoPreviousCommit">
+          &lt;
+        </button>
+        <button :disabled="hasNoNextCommit">
+          &gt;
+        </button>
+      </div>
     </div>
   </div>
 </template>
@@ -20,6 +27,20 @@ export default {
     },
     rev2() {
       return this.$store.state.git.revision2;
+    },
+    hasNoPreviousCommit() {
+      const {revision1, revision2, commits} = this.$store.state.git;
+      if (revision1 && !revision2) {
+        const indexRevision1 = commits.findIndex(({hash}) => hash === revision1);
+        return !commits[indexRevision1 + 1];
+      }
+    },
+    hasNoNextCommit() {
+      const {revision1, revision2, commits} = this.$store.state.git;
+      if (revision1 && !revision2) {
+        const indexRevision1 = commits.findIndex(({hash}) => hash === revision1);
+        return !commits[indexRevision1 - 1];
+      }
     }
   },
   filters: {
