@@ -55,22 +55,17 @@ export default {
         this.selectMultipleCommits(commitHash);
       } else {
         this.selectSingleCommits(commitHash);
-        this.collapseAfterSelection();
       }
     },
     selectMultipleCommits(commitHash) {
-      const revision1 = this.$store.state.git.revision1;
-      const revision2 = this.$store.state.git.revision2;
-      if (revision1 && !revision2) {
-        this.$store.commit('git/setRevision', {key: 'revision2', revision: commitHash});
+      this.$store.commit('git/setMultiRevision', commitHash);
+      if (this.$store.state.git.revision2) {
         this.collapseAfterSelection();
-      } else {
-        this.selectSingleCommits(commitHash);
       }
     },
     selectSingleCommits(commitHash) {
-      this.$store.commit('git/setRevision', {key: 'revision1', revision: commitHash});
-      this.$store.commit('git/setRevision', {key: 'revision2', revision: undefined});
+      this.$store.commit('git/setSingleRevision', commitHash);
+      this.collapseAfterSelection();
     },
     collapseAfterSelection() {
       this.$store.commit('commits-selection/collapseSelection', true);
