@@ -10,11 +10,13 @@
       <div class="controls">
         <button
           :disabled="hasNoPreviousCommit"
+          class="previous-commit"
           @click.prevent="goToPreviousCommit">
           &lt;
         </button>
         <button
           :disabled="hasNoNextCommit"
+          class="next-commit"
           @click.prevent="goToNextCommit">
           &gt;
         </button>
@@ -90,5 +92,38 @@ export default {
   margin: 0 auto;
   text-align: center;
   width: 43%;
+}
+
+.controls {
+  padding-top: var(--spacing);
+}
+
+.previous-commit,
+.next-commit {
+  --width: 40px;
+
+  background: var(--color-white);
+  border-radius: var(--width);
+  border: 1px solid var(--color-blue-7);
+  color: var(--color-blue-7);
+  cursor: pointer;
+  font-weight: bold;
+  height: var(--width);
+  width: var(--width);
+}
+
+.previous-commit {
+  margin-right: var(--spacing);
+}
+
+.previous-commit:hover,
+.next-commit:hover {
+  background: var(--color-blue-6);
+  color: var(--color-white);
+}
+
+.previous-commit:disabled,
+.next-commit:disabled {
+  background: var(--color-light-gray-2);
 }
 </style>
