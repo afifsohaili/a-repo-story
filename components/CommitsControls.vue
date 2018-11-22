@@ -24,6 +24,8 @@
 </template>
 
 <script>
+import {getNextCommit, getPreviousCommit} from '~/src/git/traverse-commits';
+
 export default {
   computed: {
     rev1() {
@@ -55,14 +57,12 @@ export default {
   methods: {
     goToPreviousCommit() {
       const {revision1, commits} = this.$store.state.git;
-      const indexRevision1 = commits.findIndex(({hash}) => hash === revision1);
-      const newRevision = commits[indexRevision1 + 1];
+      const newRevision = getPreviousCommit(revision1, null, commits);
       this.$store.commit('git/setSingleRevision', newRevision && newRevision.hash);
     },
     goToNextCommit() {
       const {revision1, commits} = this.$store.state.git;
-      const indexRevision1 = commits.findIndex(({hash}) => hash === revision1);
-      const newRevision = commits[indexRevision1 - 1];
+      const newRevision = getNextCommit(revision1, null, commits);
       this.$store.commit('git/setSingleRevision', newRevision && newRevision.hash);
     }
   }
