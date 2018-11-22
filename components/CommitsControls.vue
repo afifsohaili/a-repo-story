@@ -34,19 +34,21 @@ export default {
     rev2() {
       return this.$store.state.git.revision2;
     },
-    hasNoPreviousCommit() {
+    previousCommit() {
       const {revision1, revision2, commits} = this.$store.state.git;
-      if (revision1 && !revision2) {
-        const indexRevision1 = commits.findIndex(({hash}) => hash === revision1);
-        return !commits[indexRevision1 + 1];
-      }
+      const newRevision = getPreviousCommit(revision1, revision2, commits);
+      return newRevision && newRevision.hash;
+    },
+    nextCommit() {
+      const {revision1, revision2, commits} = this.$store.state.git;
+      const newRevision = getNextCommit(revision1, revision2, commits);
+      return newRevision && newRevision.hash;
+    },
+    hasNoPreviousCommit() {
+      return !this.previousCommit;
     },
     hasNoNextCommit() {
-      const {revision1, revision2, commits} = this.$store.state.git;
-      if (revision1 && !revision2) {
-        const indexRevision1 = commits.findIndex(({hash}) => hash === revision1);
-        return !commits[indexRevision1 - 1];
-      }
+      return !this.nextCommit;
     }
   },
   filters: {
@@ -56,14 +58,18 @@ export default {
   },
   methods: {
     goToPreviousCommit() {
-      const {revision1, commits} = this.$store.state.git;
-      const newRevision = getPreviousCommit(revision1, null, commits);
-      this.$store.commit('git/setSingleRevision', newRevision && newRevision.hash);
+      const newRevision = this.previousCommit;
+      if (this.rev2 === undefined) {
+        return this.$store.commit('git/setSingleRevision', newRevision);
+      }
+      return this.$store.commit('git/setMultiRevision', newRevision);
     },
     goToNextCommit() {
-      const {revision1, commits} = this.$store.state.git;
-      const newRevision = getNextCommit(revision1, null, commits);
-      this.$store.commit('git/setSingleRevision', newRevision && newRevision.hash);
+      const newRevision = this.nextCommit;
+      if (this.rev2 === undefined || newRevision === this.rev1) {
+        return this.$store.commit('git/setSingleRevision', newRevision);
+      }
+      return this.$store.commit('git/setMultiRevision', newRevision);
     }
   }
 };
